@@ -83,6 +83,14 @@
                         android:layout_marginEnd="4dp"
                         android:text="@string/browse" />
 
+                    <Button
+                        android:id="@+id/activity_repo_git_ssh_key_gen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:text="@string/git_generate_key_pair" />
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/activity_repo_git_ssh_key_layout"
                         android:layout_width="match_parent"

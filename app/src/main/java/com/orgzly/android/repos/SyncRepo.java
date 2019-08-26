@@ -10,6 +10,10 @@ import java.util.List;
  * Remote source of books (such as Dropbox directory, SSH directory, etc.)
  */
 public interface SyncRepo {
+    /**
+     * Determines whether to initiate synchronization
+     * when no connection is available
+     */
     boolean requiresConnection();
 
     /**

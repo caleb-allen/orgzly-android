@@ -277,7 +277,7 @@ public class SyncService extends DaggerService {
             try {
                 namesakes = groupAllNotebooksByName(dataRepository);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error while fetching notebook names", e);
                 String msg = (e.getMessage() != null ? e.getMessage() : e.toString());
                 status.set(SyncStatus.Type.FAILED, msg, 0, 0);
                 announceActiveSyncStatus();
@@ -551,6 +551,8 @@ public class SyncService extends DaggerService {
                 // Instead of:
                 // dataRepository.updateBookMtime(loadedBook.getBook().getId(), 0);
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Error", e);
         } finally {
             /* Delete temporary files. */
             dbFile.delete();

@@ -3,14 +3,12 @@ package com.orgzly.android.ui.repo.git
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Environment
 import android.text.TextUtils
-import android.util.Log
 import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
@@ -18,6 +16,9 @@ import android.view.View
 import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.textfield.TextInputLayout
+import com.jcraft.jsch.JSch
+import com.jcraft.jsch.KeyPair
+import com.jcraft.jsch.KeyPairRSA
 import com.orgzly.R
 import com.orgzly.android.App
 import com.orgzly.android.git.GitPreferences
@@ -39,6 +40,7 @@ import org.eclipse.jgit.lib.ProgressMonitor
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
+import java.io.OutputStream
 
 class GitRepoActivity : CommonActivity(), GitPreferences {
     private lateinit var binding: ActivityRepoGitBinding
@@ -91,6 +93,23 @@ class GitRepoActivity : CommonActivity(), GitPreferences {
 
         binding.activityRepoGitSshKeyBrowse.setOnClickListener {
             startLocalFileBrowser(binding.activityRepoGitSshKey, ACTIVITY_REQUEST_CODE_FOR_SSH_KEY_SELECTION, true)
+        }
+
+        binding.activityRepoGitSshKeyGen.setOnClickListener {
+            // TODO generate private keypair in private directory
+            val privateKey = filesDir.resolve("id_rsa")
+            val publicKey = filesDir.resolve("id_rsa.pub")
+            val keyPair: KeyPair = KeyPair.genKeyPair(JSch(), KeyPair.RSA)
+            keyPair.writePrivateKey(privateKey.absolutePath)
+            binding.activityRepoGitSshKey.setText(privateKey.absolutePath)
+            keyPair.writePublicKey(publicKey.absolutePath, "orgzly for android")
+            val clipService = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+            val clipData = ClipData.newPlainText("Orgzly public key",
+                    publicKey.readText())
+
+            clipService.primaryClip = clipData
+            showSnackbar("Public key copied to clipboard")
         }
 
         repoId = intent.getLongExtra(ARG_REPO_ID, 0)
